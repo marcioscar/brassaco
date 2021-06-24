@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import { grupos } from "../data/menu.json";
-import Navbar from "../componnentes/navbar";
+import Navbar from "../components/navbar";
 
 const Home = () => {
   return (

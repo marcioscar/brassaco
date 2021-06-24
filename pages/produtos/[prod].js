@@ -2,7 +2,7 @@ import Head from "next/head";
 import { grupos } from "../../data/menu.json";
 import useSWR from "swr";
 import api from "../../utils/api";
-import Navbar from "../../componnentes/navbar";
+import Navbar from "../../components/navbar";
 import { useState } from "react";
 // const Prod = ({ prod }) => {
 //   const { name, price, photoPath, group } = produtos.find(
