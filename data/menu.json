@@ -1,0 +1,138 @@
+{
+  "grupos": [
+    {
+      "slug": "sacosPEBB",
+      "group": 1,
+      "name": "Sacos em PEBD",
+      "photoPath": "/sacos.png",
+      "description": "Sacos em Polietilendo de Baixa densidade"
+    },
+    {
+      "slug": "sacolas",
+      "group": 2,
+      "name": "Sacolas Camiseta",
+      "photoPath": "/sacola2.png",
+      "description": "Sacolas em material PEAD Virgem"
+    },
+
+    {
+      "slug": "copos",
+      "group": 4,
+      "name": "Copos",
+      "photoPath": "/copo.png",
+      "description": "Copos descratáveis pra todos os fins"
+    },
+    {
+      "slug": "pratos",
+      "group": 5,
+      "name": "Pratos",
+      "photoPath": "/prato.png",
+      "description": "Pratos descratáveis pra todos os fins"
+    },
+    {
+      "slug": "potes",
+      "group": 6,
+      "name": "Potes",
+      "photoPath": "/potes.png",
+      "description": "Potes descratáveis pra todos os fins"
+    },
+    {
+      "slug": "talheres",
+      "group": 7,
+      "name": "Talheres",
+      "photoPath": "/talheres.png",
+      "description": "Talheres descratáveis pra todos os fins"
+    },
+    {
+      "slug": "isopor",
+      "group": 8,
+      "name": "Isopor",
+      "photoPath": "/isopor.png",
+      "description": "Caixas, Marmitas, pratos e copos de isopor"
+    },
+    {
+      "slug": "guardanapo",
+      "group": 9,
+      "name": "Guardanapos",
+      "photoPath": "/guardanapo.png",
+      "description": "Guardanapos estojo e folhas soltas"
+    },
+    {
+      "slug": "papeltoalha",
+      "group": 10,
+      "name": "Papel Toalha",
+      "photoPath": "/papel-toalha.png",
+      "description": "Papel toalha de estojo rolos"
+    },
+    {
+      "slug": "sacopapel",
+      "group": 11,
+      "name": "Sacos de Papel",
+      "photoPath": "/saco-papel.png",
+      "description": "Sacos e sacolas de papel"
+    },
+    {
+      "slug": "bobinas",
+      "group": 12,
+      "name": "Bobinas",
+      "photoPath": "/bobina.png",
+      "description": "Bobinas picotadas, strech e PVC"
+    },
+    {
+      "slug": "dispenser",
+      "group": 13,
+      "name": "Dispenser e Suporte",
+      "photoPath": "/dispenser.png",
+      "description": "Dispenser e suportes para papel tolaha e outros"
+    },
+    {
+      "slug": "garrafa",
+      "group": 14,
+      "name": "Garrafas",
+      "photoPath": "/garrafa.png",
+      "description": "Garrafas plásticas"
+    },
+    {
+      "slug": "saldoras",
+      "group": 15,
+      "name": "Seladoras",
+      "photoPath": "/seladora.png",
+      "description": "Seladoras para sacos plásticos"
+    },
+    {
+      "slug": "canudos",
+      "group": 16,
+      "name": "Canudos",
+      "photoPath": "/canudo.png",
+      "description": "Canudos de plásticos e papel"
+    },
+    {
+      "slug": "tnt",
+      "group": 17,
+      "name": "Sacos TNT",
+      "photoPath": "/tnt.png",
+      "description": "Sacos em TNT"
+    },
+    {
+      "slug": "aluminio",
+      "group": 18,
+      "name": "Papel Alumínio e marmitex",
+      "photoPath": "/aluminio.png",
+      "description": "Papel Alumínio e marmitex"
+    },
+    {
+      "slug": "tampa",
+      "group": 19,
+      "name": "Tampas ",
+      "photoPath": "/tampa.png",
+      "description": "Tampas para potes e copos"
+    },
+    {
+      "slug": "aerosol",
+      "group": 20,
+      "name": "Aerosol ",
+      "photoPath": "/aerosol.png",
+      "description": "Aerosois para limpesa e multiusos"
+    }
+  ]
+}
