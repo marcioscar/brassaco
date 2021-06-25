@@ -66,7 +66,7 @@ const Prod = ({ prod }) => {
                   <tr className="bg-gray-200 text-blue-700 uppercase text-sm leading-normal">
                     <th className="py-2 pl-1 text-center">Cod</th>
                     <th className="py-2 px-1 text-center">Descrição</th>
-                    <th className="py-2 px-1 text-right">preço</th>
+                    <th className="py-2 px-2 text-right">preço</th>
                   </tr>
                 </thead>
                 <tbody className="text-gray-600 text-sm font-light">
@@ -79,7 +79,7 @@ const Prod = ({ prod }) => {
                         {CODPRODUTO}
                       </td>
                       <td className="py-2 text-left ">{DESCRICAO}</td>
-                      <td className="py-2 pr-1 text-right whitespace-nowrap font-medium">
+                      <td className="py-2 pr-2 text-right whitespace-nowrap font-medium">
                         {PRECO}
                       </td>
                     </tr>
