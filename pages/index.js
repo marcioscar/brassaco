@@ -6,6 +6,10 @@ import Navbar from "../components/navbar";
 const Home = () => {
   return (
     <>
+      <Head>
+        <title>Brassaco Embalagens</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <Navbar />
       <div className="container mx-auto px-2 bg-gray-50">
         <Head>
