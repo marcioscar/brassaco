@@ -133,6 +133,48 @@
       "name": "Aerosol ",
       "photoPath": "/aerosol.png",
       "description": "Aerosois para limpesa e multiusos"
+    },
+    {
+      "slug": "SaboneteAlcool",
+      "group": 22,
+      "name": "Sabonete e Alcool ",
+      "photoPath": "/sabonete.png",
+      "description": "Sabonetes líquido e alcool gel e líquido"
+    },
+    {
+      "slug": "Panos",
+      "group": 23,
+      "name": "Panos ",
+      "photoPath": "/pano.png",
+      "description": "Panos para limpeza"
+    },
+    {
+      "slug": "papelao",
+      "group": 24,
+      "name": "Caixas de papelão ",
+      "photoPath": "/caixa.png",
+      "description": "Caixas de papelão"
+    },
+    {
+      "slug": "fitas",
+      "group": 25,
+      "name": "Fitas adesivas",
+      "photoPath": "/fita.png",
+      "description": "Fitas adesivas"
+    },
+    {
+      "slug": "luvas",
+      "group": 26,
+      "name": "Luvas / Máscaras / Touca",
+      "photoPath": "/luvas.png",
+      "description": "Luvas, Máscaras e Toucas"
+    },
+    {
+      "slug": "rafia",
+      "group": 27,
+      "name": "Sacos de Rafia",
+      "photoPath": "/rafia.png",
+      "description": "Sacos de Ráfia"
     }
   ]
 }
