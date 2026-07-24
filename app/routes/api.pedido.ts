@@ -1,5 +1,6 @@
 import type { Route } from "./+types/api.pedido";
 import {
+	STATUS_PEDIDO,
 	atualizarStatusDoPedido,
 	criarPedido,
 	listarTodosPedidos,
@@ -7,6 +8,7 @@ import {
 } from "../models/pedidos.server";
 import { validarCredenciaisAdmin } from "../services/admin-auth.server";
 import { criarCheckoutPontualPagarme } from "../services/pagarme.server";
+import { enviarEmailPedidoEmRota } from "../services/email.server";
 
 type PayloadCriarPedido = {
 	intent: "criar";
@@ -241,6 +243,34 @@ function parsearPayload(data: unknown): PayloadPedido | null {
 	return null;
 }
 
+async function notificarSeEntrouEmRota(pedido: {
+	id: string;
+	status: string;
+	total: number;
+	statusAnterior: string;
+	clienteEmail?: string;
+	clienteNome?: string;
+}) {
+	if (
+		pedido.status !== STATUS_PEDIDO.EM_ROTA ||
+		pedido.statusAnterior === STATUS_PEDIDO.EM_ROTA ||
+		!pedido.clienteEmail
+	) {
+		return;
+	}
+
+	try {
+		await enviarEmailPedidoEmRota({
+			para: pedido.clienteEmail,
+			nomeCliente: pedido.clienteNome,
+			pedidoId: pedido.id,
+			total: pedido.total,
+		});
+	} catch {
+		// Falha no envio de e-mail nao deve impedir a atualizacao do status do pedido.
+	}
+}
+
 export async function action({ request }: Route.ActionArgs) {
 	let data: unknown;
 	try {
@@ -264,6 +294,7 @@ export async function action({ request }: Route.ActionArgs) {
 		if (!pedido) {
 			return respostaJson({ erro: "Nao foi possivel atualizar o status." }, 400);
 		}
+		await notificarSeEntrouEmRota(pedido);
 		return respostaJson({ pedido });
 	}
 
@@ -293,6 +324,7 @@ export async function action({ request }: Route.ActionArgs) {
 		if (!pedido) {
 			return respostaJson({ erro: "Nao foi possivel atualizar o status." }, 400);
 		}
+		await notificarSeEntrouEmRota(pedido);
 		return respostaJson({ pedido });
 	}
 

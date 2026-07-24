@@ -6,6 +6,13 @@ type EnviarEmailRecuperacaoParams = {
 	codigoRecuperacao: string;
 };
 
+type EnviarEmailPedidoEmRotaParams = {
+	para: string;
+	nomeCliente?: string;
+	pedidoId: string;
+	total: number;
+};
+
 function obterConfiguracaoSmtp() {
 	const host = process.env.SMTP_HOST;
 	const port = Number(process.env.SMTP_PORT ?? "465");
@@ -20,6 +27,25 @@ function obterConfiguracaoSmtp() {
 	return { host, port, user, pass, from };
 }
 
+function criarTransportador(config: NonNullable<ReturnType<typeof obterConfiguracaoSmtp>>) {
+	return nodemailer.createTransport({
+		host: config.host,
+		port: config.port,
+		secure: true,
+		auth: {
+			user: config.user,
+			pass: config.pass,
+		},
+	});
+}
+
+function formatarPreco(preco: number) {
+	return new Intl.NumberFormat("pt-BR", {
+		style: "currency",
+		currency: "BRL",
+	}).format(preco);
+}
+
 export async function enviarEmailRecuperacaoSenha({
 	para,
 	linkRedefinicao,
@@ -30,15 +56,7 @@ export async function enviarEmailRecuperacaoSenha({
 		return false;
 	}
 
-	const transporter = nodemailer.createTransport({
-		host: config.host,
-		port: config.port,
-		secure: true,
-		auth: {
-			user: config.user,
-			pass: config.pass,
-		},
-	});
+	const transporter = criarTransportador(config);
 
 	await transporter.sendMail({
 		from: config.from,
@@ -54,6 +72,37 @@ export async function enviarEmailRecuperacaoSenha({
 				</a>
 			</p>
 			<p>Se voce nao solicitou, ignore este e-mail.</p>
+		`,
+	});
+
+	return true;
+}
+
+export async function enviarEmailPedidoEmRota({
+	para,
+	nomeCliente,
+	pedidoId,
+	total,
+}: EnviarEmailPedidoEmRotaParams) {
+	const config = obterConfiguracaoSmtp();
+	if (!config) {
+		return false;
+	}
+
+	const transporter = criarTransportador(config);
+	const numeroPedido = pedidoId.slice(-6).toUpperCase();
+	const saudacao = nomeCliente?.trim() ? `Ola, ${nomeCliente.trim()}!` : "Ola!";
+	const totalFormatado = formatarPreco(total);
+
+	await transporter.sendMail({
+		from: config.from,
+		to: para,
+		subject: `Brassaco - Pedido #${numeroPedido} saiu para entrega`,
+		text: `${saudacao}\n\nSeu pedido #${numeroPedido} (total ${totalFormatado}) saiu para entrega e deve chegar em breve.\n\nObrigado por comprar na Brassaco Embalagens!`,
+		html: `
+			<p>${saudacao}</p>
+			<p>Seu pedido <strong>#${numeroPedido}</strong> (total ${totalFormatado}) saiu para entrega e deve chegar em breve.</p>
+			<p>Obrigado por comprar na Brassaco Embalagens!</p>
 		`,
 	});
 

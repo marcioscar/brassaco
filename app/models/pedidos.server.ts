@@ -416,6 +416,14 @@ export async function atualizarStatusDoPedido(pedidoId: string, status: string) 
 		return null;
 	}
 
+	const pedidoAnterior = await db.pedidos.findUnique({
+		where: { id },
+		select: { status: true, clienteEmail: true, clienteNome: true },
+	});
+	if (!pedidoAnterior) {
+		return null;
+	}
+
 	const pedidoAtualizado = await db.pedidos.update({
 		where: { id },
 		data: {
@@ -430,7 +438,12 @@ export async function atualizarStatusDoPedido(pedidoId: string, status: string) 
 		},
 	});
 
-	return paraPedidoResumo(pedidoAtualizado);
+	return {
+		...paraPedidoResumo(pedidoAtualizado),
+		statusAnterior: pedidoAnterior.status,
+		clienteEmail: pedidoAnterior.clienteEmail ?? undefined,
+		clienteNome: pedidoAnterior.clienteNome ?? undefined,
+	};
 }
 
 function normalizarAtualizacaoPagamento(input: AtualizarPagamentoPedidoInput) {
