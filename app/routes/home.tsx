@@ -1073,19 +1073,19 @@ function HeroBrassaco({
 							Sacos · Sacolas · Descartáveis
 						</span>
 					</div>
-					<div className='absolute left-4 top-1/2 hidden -translate-y-1/2 items-center gap-3 rounded-2xl border border-zinc-200 bg-white p-3 pr-4 shadow-xl lg:flex'>
-						<span className='flex size-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700'>
-							<Truck className='size-5' />
+				</div>
+				<div className='absolute -left-3 top-1/2 z-10 hidden -translate-y-1/2 items-center gap-3 rounded-2xl border border-zinc-200 bg-white p-3 pr-4 shadow-xl lg:flex'>
+					<span className='flex size-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700'>
+						<Truck className='size-5' />
+					</span>
+					<span className='block'>
+						<span className='block text-sm font-semibold text-zinc-900'>
+							Frete grátis no DF
 						</span>
-						<span className='block'>
-							<span className='block text-sm font-semibold text-zinc-900'>
-								Frete grátis no DF
-							</span>
-							<span className='block text-xs text-zinc-500'>
-								em pedidos acima de R$ 100
-							</span>
+						<span className='block text-xs text-zinc-500'>
+							em pedidos acima de R$ 100
 						</span>
-					</div>
+					</span>
 				</div>
 			</div>
 		</section>
