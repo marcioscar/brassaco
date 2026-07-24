@@ -1074,7 +1074,7 @@ function HeroBrassaco({
 						</span>
 					</div>
 				</div>
-				<div className='absolute -left-3 top-1/2 z-10 hidden -translate-y-1/2 items-center gap-3 rounded-2xl border border-zinc-200 bg-white p-3 pr-4 shadow-xl lg:flex'>
+				<div className='absolute -left-6 top-1/2 z-10 hidden -translate-y-1/2 items-center gap-3 rounded-2xl border border-zinc-200 bg-white p-3 pr-4 shadow-xl lg:flex'>
 					<span className='flex size-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700'>
 						<Truck className='size-5' />
 					</span>
