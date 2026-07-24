@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL")
+}
+
+model produtos_preco {
+    id        String @id @default(auto()) @map("_id") @db.ObjectId
+    codigo    Int
+    descricao String
+    unidade   String @map("unid")
+    preco     Float
+    ativo     Boolean? @default(true)
+    grupo     Int
+    fornecedor String?
+    nomeGrupo  String? @map("nome_grupo")
+}
+
+model clientes {
+    id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+    nome               String?
+    email              String?
+    emailNormalizado   String?
+    senhaHash          String?
+    cpf                String?
+    cpfNormalizado     String?
+    cep                String?
+    telefone           String?
+    telefoneNormalizado String?
+    endereco           String?
+    observacoes        String?
+    createdAt          DateTime?
+    updatedAt          DateTime?
+}
+
+model pedidos {
+    id                String   @id @default(auto()) @map("_id") @db.ObjectId
+    clienteId         String   @db.ObjectId
+    clienteNome       String?
+    clienteEmail      String?
+    clienteTelefone   String?
+    clienteEndereco   String?
+    clienteDocumento  String?
+    status            String
+    pagamentoProvedor String?
+    pagamentoStatus   String?
+    pagamentoLinkId   String?
+    pagamentoLinkUrl  String?
+    pagamentoAtualizadoEm DateTime?
+    itens             Json
+    total             Float
+    observacoesCliente String?
+    createdAt         DateTime
+    updatedAt         DateTime
+}
+
+model recuperacoes_senha {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    clienteId   String   @db.ObjectId
+    codigoHash  String
+    expiresAt   DateTime
+    usedAt      DateTime?
+    createdAt   DateTime
+}
