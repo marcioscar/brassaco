@@ -10,6 +10,11 @@ import {
 	ProdutosDataTable,
 	type ProdutoAdmin,
 } from "~/components/admin/produtos-data-table";
+import {
+	NovoProdutoForm,
+	type NovoProdutoAdmin,
+	type OpcaoGrupoAdmin,
+} from "~/components/admin/novo-produto-form";
 
 type CredenciaisAdmin = {
 	email: string;
@@ -199,8 +204,17 @@ async function requisitarApiProduto(payload: unknown) {
 		erro?: string;
 		produtos?: ProdutoAdmin[];
 		produto?: ProdutoAdmin;
+		grupos?: OpcaoGrupoAdmin[];
+		proximoCodigo?: number;
 	};
 	return { resposta, dados };
+}
+
+function listarUnidadesUsadas(produtos: ProdutoAdmin[]) {
+	const unidades = new Set(
+		produtos.map((produto) => produto.unidade.trim().toUpperCase()).filter(Boolean),
+	);
+	return [...unidades].sort((a, b) => a.localeCompare(b, "pt-BR"));
 }
 
 function normalizarPrecoDigitado(valor: string) {
@@ -217,6 +231,8 @@ export default function Admin() {
 	const [filtroStatus, setFiltroStatus] = useState("");
 	const [buscaCliente, setBuscaCliente] = useState("");
 	const [produtos, setProdutos] = useState<ProdutoAdmin[]>([]);
+	const [gruposProduto, setGruposProduto] = useState<OpcaoGrupoAdmin[]>([]);
+	const [proximoCodigo, setProximoCodigo] = useState(1);
 	const [precoEditado, setPrecoEditado] = useState<Record<string, string>>({});
 	const [ativoEditado, setAtivoEditado] = useState<Record<string, boolean>>({});
 	const [carregando, setCarregando] = useState(false);
@@ -266,6 +282,8 @@ export default function Admin() {
 			}
 
 			setProdutos(dados.produtos);
+			setGruposProduto(dados.grupos ?? []);
+			setProximoCodigo(dados.proximoCodigo ?? 1);
 			setPrecoEditado(
 				Object.fromEntries(
 					dados.produtos.map((produto) => [produto.id, String(produto.preco)]),
@@ -327,6 +345,7 @@ export default function Admin() {
 		setCredenciais(null);
 		setPedidos([]);
 		setProdutos([]);
+		setGruposProduto([]);
 		setErro("");
 		setMensagem("");
 	}
@@ -359,6 +378,34 @@ export default function Admin() {
 
 			setMensagem("Status atualizado com sucesso.");
 			await carregarPedidos(credenciais);
+		} finally {
+			setCarregando(false);
+		}
+	}
+
+	async function criarProduto(novoProduto: NovoProdutoAdmin) {
+		if (!credenciais) {
+			return false;
+		}
+
+		setCarregando(true);
+		setErro("");
+		setMensagem("");
+		try {
+			const { resposta, dados } = await requisitarApiProduto({
+				intent: "admin_criar_produto",
+				email: credenciais.email,
+				senha: credenciais.senha,
+				...novoProduto,
+			});
+			if (!resposta.ok || !dados.produto) {
+				setErro(dados.erro ?? "Nao foi possivel cadastrar o produto.");
+				return false;
+			}
+
+			setMensagem(`Produto "${dados.produto.descricao}" cadastrado com sucesso.`);
+			await carregarProdutos(credenciais);
+			return true;
 		} finally {
 			setCarregando(false);
 		}
@@ -565,6 +612,13 @@ export default function Admin() {
 										/>
 									</TabsContent>
 									<TabsContent value='produtos' className='space-y-3'>
+										<NovoProdutoForm
+											grupos={gruposProduto}
+											unidades={listarUnidadesUsadas(produtos)}
+											proximoCodigo={proximoCodigo}
+											carregando={carregando}
+											onCriarProduto={criarProduto}
+										/>
 										<ProdutosDataTable
 											produtos={produtos}
 											precoEditado={precoEditado}

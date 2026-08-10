@@ -415,6 +415,138 @@ function normalizarPreco(valor: number) {
 	return Number(valor.toFixed(2));
 }
 
+export type OpcaoGrupoAdmin = {
+	grupo: number;
+	nomeGrupo: string;
+};
+
+/**
+ * Opcoes de grupo oferecidas no cadastro: os grupos ja usados no banco
+ * combinados com os grupos conhecidos em GRUPOS_POR_CODIGO. Assim um produto
+ * novo sempre cai em um card ja existente do catalogo.
+ */
+export async function listarOpcoesDeGrupoAdmin(): Promise<OpcaoGrupoAdmin[]> {
+	const existentes = await comNormalizacaoAutomatica(() =>
+		db.produtos_preco.findMany({
+			select: { grupo: true, nomeGrupo: true },
+			distinct: ["grupo", "nomeGrupo"],
+		}),
+	);
+
+	const opcoes = new Map<string, OpcaoGrupoAdmin>();
+
+	for (const [codigo, nome] of Object.entries(GRUPOS_POR_CODIGO)) {
+		opcoes.set(`${codigo}|${normalizarNomeDoGrupo(nome)}`, {
+			grupo: Number(codigo),
+			nomeGrupo: nome,
+		});
+	}
+
+	for (const item of existentes) {
+		const nomeGrupo = item.nomeGrupo?.trim() || obterNomeDoGrupo(item.grupo);
+		opcoes.set(`${item.grupo}|${normalizarNomeDoGrupo(nomeGrupo)}`, {
+			grupo: item.grupo,
+			nomeGrupo,
+		});
+	}
+
+	return [...opcoes.values()].sort((a, b) =>
+		a.nomeGrupo.localeCompare(b.nomeGrupo, "pt-BR"),
+	);
+}
+
+/** Maior codigo em uso + 1, para pre-preencher o formulario de cadastro. */
+export async function sugerirProximoCodigoAdmin() {
+	const [ultimo] = await comNormalizacaoAutomatica(() =>
+		db.produtos_preco.findMany({
+			orderBy: { codigo: "desc" },
+			take: 1,
+			select: { codigo: true },
+		}),
+	);
+
+	return (ultimo?.codigo ?? 0) + 1;
+}
+
+export type CriarProdutoAdminInput = {
+	codigo: number;
+	descricao: string;
+	unidade: string;
+	preco: number;
+	grupo: number;
+	nomeGrupo: string;
+	fornecedor?: string;
+	ativo: boolean;
+};
+
+type ResultadoCriarProduto =
+	| { ok: true; produto: ReturnType<typeof mapearProdutoAdmin> }
+	| { ok: false; erro: string };
+
+export async function criarProdutoAdmin(
+	input: CriarProdutoAdminInput,
+): Promise<ResultadoCriarProduto> {
+	const descricao = input.descricao.trim();
+	const unidade = input.unidade.trim().toUpperCase();
+	const nomeGrupo = input.nomeGrupo.trim();
+	const fornecedor = input.fornecedor?.trim() ?? "";
+	const preco = normalizarPreco(input.preco);
+
+	if (!Number.isInteger(input.codigo) || input.codigo <= 0) {
+		return { ok: false, erro: "Informe um codigo inteiro maior que zero." };
+	}
+	if (!descricao) {
+		return { ok: false, erro: "Informe a descricao do produto." };
+	}
+	if (!unidade) {
+		return { ok: false, erro: "Informe a unidade do produto." };
+	}
+	if (preco === null) {
+		return { ok: false, erro: "Informe um preco valido." };
+	}
+	if (!Number.isInteger(input.grupo) || input.grupo < 0) {
+		return { ok: false, erro: "Selecione um grupo valido." };
+	}
+	if (!nomeGrupo) {
+		return { ok: false, erro: "Selecione um grupo valido." };
+	}
+
+	const jaExiste = await comNormalizacaoAutomatica(() =>
+		db.produtos_preco.findFirst({
+			where: { codigo: input.codigo },
+			select: { id: true },
+		}),
+	);
+	if (jaExiste) {
+		return { ok: false, erro: `Ja existe um produto com o codigo ${input.codigo}.` };
+	}
+
+	const produto = await db.produtos_preco.create({
+		data: {
+			codigo: input.codigo,
+			descricao,
+			unidade,
+			preco,
+			grupo: input.grupo,
+			nomeGrupo,
+			fornecedor: fornecedor || null,
+			ativo: input.ativo,
+		},
+		select: {
+			id: true,
+			codigo: true,
+			descricao: true,
+			unidade: true,
+			preco: true,
+			grupo: true,
+			nomeGrupo: true,
+			ativo: true,
+		},
+	});
+
+	return { ok: true, produto: mapearProdutoAdmin(produto) };
+}
+
 function mapearProdutoAdmin(produto: ProdutoAdmin) {
 	return {
 		...produto,

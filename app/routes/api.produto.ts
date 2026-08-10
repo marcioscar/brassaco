@@ -1,7 +1,10 @@
 import type { Route } from "./+types/api.produto";
 import {
 	atualizarProdutoAdmin,
+	criarProdutoAdmin,
+	listarOpcoesDeGrupoAdmin,
 	listarProdutosAdminComAtivo,
+	sugerirProximoCodigoAdmin,
 } from "../models/produtos.server";
 import { validarCredenciaisAdmin } from "../services/admin-auth.server";
 
@@ -9,6 +12,20 @@ type PayloadListarProdutosAdmin = {
 	intent: "admin_listar_produtos";
 	email: string;
 	senha: string;
+};
+
+type PayloadCriarProdutoAdmin = {
+	intent: "admin_criar_produto";
+	email: string;
+	senha: string;
+	codigo: number;
+	descricao: string;
+	unidade: string;
+	preco: number;
+	grupo: number;
+	nomeGrupo: string;
+	fornecedor?: string;
+	ativo: boolean;
 };
 
 type PayloadAtualizarProdutoAdmin = {
@@ -20,7 +37,10 @@ type PayloadAtualizarProdutoAdmin = {
 	ativo: boolean;
 };
 
-type PayloadProdutoAdmin = PayloadListarProdutosAdmin | PayloadAtualizarProdutoAdmin;
+type PayloadProdutoAdmin =
+	| PayloadListarProdutosAdmin
+	| PayloadCriarProdutoAdmin
+	| PayloadAtualizarProdutoAdmin;
 
 function respostaJson(body: unknown, status = 200) {
 	return Response.json(body, { status });
@@ -58,6 +78,33 @@ function parsearPayload(data: unknown): PayloadProdutoAdmin | null {
 			intent,
 			email: payload.email,
 			senha: payload.senha,
+		};
+	}
+
+	if (
+		intent === "admin_criar_produto" &&
+		ehString(payload.email) &&
+		ehString(payload.senha) &&
+		ehNumero(payload.codigo) &&
+		ehString(payload.descricao) &&
+		ehString(payload.unidade) &&
+		ehNumero(payload.preco) &&
+		ehNumero(payload.grupo) &&
+		ehString(payload.nomeGrupo) &&
+		ehBoolean(payload.ativo)
+	) {
+		return {
+			intent,
+			email: payload.email,
+			senha: payload.senha,
+			codigo: payload.codigo,
+			descricao: payload.descricao,
+			unidade: payload.unidade,
+			preco: payload.preco,
+			grupo: payload.grupo,
+			nomeGrupo: payload.nomeGrupo,
+			fornecedor: ehString(payload.fornecedor) ? payload.fornecedor : undefined,
+			ativo: payload.ativo,
 		};
 	}
 
@@ -101,8 +148,30 @@ export async function action({ request }: Route.ActionArgs) {
 	}
 
 	if (payload.intent === "admin_listar_produtos") {
-		const produtos = await listarProdutosAdminComAtivo();
-		return respostaJson({ produtos });
+		const [produtos, grupos, proximoCodigo] = await Promise.all([
+			listarProdutosAdminComAtivo(),
+			listarOpcoesDeGrupoAdmin(),
+			sugerirProximoCodigoAdmin(),
+		]);
+		return respostaJson({ produtos, grupos, proximoCodigo });
+	}
+
+	if (payload.intent === "admin_criar_produto") {
+		const resultado = await criarProdutoAdmin({
+			codigo: payload.codigo,
+			descricao: payload.descricao,
+			unidade: payload.unidade,
+			preco: payload.preco,
+			grupo: payload.grupo,
+			nomeGrupo: payload.nomeGrupo,
+			fornecedor: payload.fornecedor,
+			ativo: payload.ativo,
+		});
+		if (!resultado.ok) {
+			return respostaJson({ erro: resultado.erro }, 400);
+		}
+
+		return respostaJson({ produto: resultado.produto });
 	}
 
 	const produto = await atualizarProdutoAdmin({
