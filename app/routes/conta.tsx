@@ -235,6 +235,8 @@ function formatarStatus(status: string) {
 	switch (status) {
 		case "AGUARDANDO_CONFIRMACAO":
 			return "Aguardando confirmacao";
+		case "PAGO":
+			return "Pago";
 		case "EM_SEPARACAO":
 			return "Em separacao";
 		case "EM_ROTA":
@@ -253,11 +255,15 @@ function obterCorStatus(status: string) {
 		return "#84370B";
 	}
 
+	if (status === "PAGO") {
+		return "#166534";
+	}
+
 	return "#E5E7EB";
 }
 
 function obterCorTextoStatus(status: string) {
-	if (status === "AGUARDANDO_CONFIRMACAO") {
+	if (status === "AGUARDANDO_CONFIRMACAO" || status === "PAGO") {
 		return "#FFFFFF";
 	}
 

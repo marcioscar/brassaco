@@ -96,7 +96,7 @@ function mapearEventoPagarme(tipoEvento: string): EventoPagarmeMapeado | null {
 		case "order.paid":
 		case "charge.paid":
 			return {
-				statusPedido: STATUS_PEDIDO.EM_SEPARACAO,
+				statusPedido: STATUS_PEDIDO.PAGO,
 				pagamentoStatus: "PAID",
 			};
 		case "order.payment_failed":

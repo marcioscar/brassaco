@@ -49,6 +49,7 @@ type PedidoAdmin = {
 const CHAVE_ADMIN = "bel:admin-auth:v1";
 const STATUS_PEDIDO = [
 	"AGUARDANDO_CONFIRMACAO",
+	"PAGO",
 	"EM_SEPARACAO",
 	"EM_ROTA",
 	"ENTREGUE",

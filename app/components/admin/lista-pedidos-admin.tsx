@@ -28,6 +28,7 @@ export type PedidoAdminLista = {
 
 const STATUS_PEDIDO = [
 	"AGUARDANDO_CONFIRMACAO",
+	"PAGO",
 	"EM_SEPARACAO",
 	"EM_ROTA",
 	"ENTREGUE",
