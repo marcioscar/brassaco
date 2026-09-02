@@ -9,6 +9,7 @@ import {
 import { validarCredenciaisAdmin } from "../services/admin-auth.server";
 import { criarCheckoutPontualPagarme } from "../services/pagarme.server";
 import { enviarEmailPedidoEmRota } from "../services/email.server";
+import { avisarPedidoNovo } from "../services/telegram.server";
 
 type PayloadCriarPedido = {
 	intent: "criar";
@@ -340,6 +341,14 @@ export async function action({ request }: Route.ActionArgs) {
 			return respostaJson({ erro: "Dados do pedido invalidos." }, 400);
 		}
 
+		avisarPedidoNovo({
+			...pedidoSemCheckout,
+			clienteNome: payload.clienteNome,
+			clienteTelefone: payload.clienteTelefone,
+			clienteEndereco: payload.clienteEndereco,
+			observacoesCliente: payload.observacoesCliente,
+		});
+
 		return respostaJson({
 			pedido: pedidoSemCheckout,
 			checkoutPendente: true,
@@ -381,6 +390,14 @@ export async function action({ request }: Route.ActionArgs) {
 	if (!pedido) {
 		return respostaJson({ erro: "Dados do pedido invalidos." }, 400);
 	}
+
+	avisarPedidoNovo({
+		...pedido,
+		clienteNome: payload.clienteNome,
+		clienteTelefone: payload.clienteTelefone,
+		clienteEndereco: payload.clienteEndereco,
+		observacoesCliente: payload.observacoesCliente,
+	});
 
 	return respostaJson({ pedido, checkoutUrl: checkoutPagarme.url });
 }

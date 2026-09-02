@@ -5,6 +5,7 @@ import {
 	type StatusPedido,
 	atualizarPedidoPorPagamento,
 } from "../models/pedidos.server";
+import { avisarPedidoPago } from "../services/telegram.server";
 
 type EventoPagarmeMapeado = {
 	statusPedido?: StatusPedido;
@@ -254,6 +255,12 @@ export async function action({ request }: Route.ActionArgs) {
 			},
 			202,
 		);
+	}
+
+	// order.paid e charge.paid chegam para o mesmo pagamento: so avisa quando o
+	// pedido ainda nao estava pago.
+	if (pedido.status === STATUS_PEDIDO.PAGO && pedido.statusAnterior !== STATUS_PEDIDO.PAGO) {
+		avisarPedidoPago(pedido);
 	}
 
 	return respostaJson({

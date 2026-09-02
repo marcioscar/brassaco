@@ -470,7 +470,15 @@ export async function atualizarPedidoPorPagamento(input: AtualizarPagamentoPedid
 	const pedido = await db.pedidos.findFirst({
 		where: { pagamentoLinkId: dados.pagamentoLinkId },
 		orderBy: { createdAt: "desc" },
-		select: { id: true },
+		select: {
+			id: true,
+			status: true,
+			pagamentoStatus: true,
+			clienteNome: true,
+			clienteTelefone: true,
+			clienteEndereco: true,
+			observacoesCliente: true,
+		},
 	});
 	if (!pedido) {
 		return null;
@@ -496,5 +504,15 @@ export async function atualizarPedidoPorPagamento(input: AtualizarPagamentoPedid
 		},
 	});
 
-	return paraPedidoResumo(pedidoAtualizado);
+	return {
+		...paraPedidoResumo(pedidoAtualizado),
+		// A Pagar.me manda order.paid e charge.paid para o mesmo pagamento; quem
+		// avisa o Telegram usa o estado anterior para nao repetir a mensagem.
+		statusAnterior: pedido.status,
+		pagamentoStatusAnterior: pedido.pagamentoStatus ?? undefined,
+		clienteNome: pedido.clienteNome ?? undefined,
+		clienteTelefone: pedido.clienteTelefone ?? undefined,
+		clienteEndereco: pedido.clienteEndereco ?? undefined,
+		observacoesCliente: pedido.observacoesCliente?.trim() || undefined,
+	};
 }
