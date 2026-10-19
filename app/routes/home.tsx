@@ -701,18 +701,18 @@ function calcularFretePedido(
 		};
 	}
 
-	if (totalCarrinho >= 100) {
+	if (totalCarrinho >= 150) {
 		return {
 			valor: 0,
-			resumo: "Frete gratis (DF para pedidos acima de R$ 100,00)",
-			observacao: "Frete: gratis (DF, pedido acima de R$ 100,00).",
+			resumo: "Frete gratis (DF para pedidos acima de R$ 150,00)",
+			observacao: "Frete: gratis (DF, pedido acima de R$ 150,00).",
 		};
 	}
 
 	return {
 		valor: 30,
-		resumo: "Frete R$ 30,00 (DF para pedidos abaixo de R$ 100,00)",
-		observacao: "Frete: R$ 30,00 (DF, pedido abaixo de R$ 100,00).",
+		resumo: "Frete R$ 30,00 (DF para pedidos abaixo de R$ 150,00)",
+		observacao: "Frete: R$ 30,00 (DF, pedido abaixo de R$ 150,00).",
 	};
 }
 
@@ -1083,7 +1083,7 @@ function HeroBrassaco({
 							Frete grátis no DF
 						</span>
 						<span className='block text-xs text-zinc-500'>
-							em pedidos acima de R$ 100
+							em pedidos acima de R$ 150
 						</span>
 					</span>
 				</div>
@@ -1392,7 +1392,7 @@ export default function Home() {
 	return (
 		<div className='min-h-screen bg-[#f4f8f4] text-zinc-900'>
 			<div className='bg-emerald-600 px-4 py-1.5 text-center text-xs font-semibold text-white'>
-				Frete grátis no DF para pedidos acima de R$ 100 · Atacado e varejo
+				Frete grátis no DF para pedidos acima de R$ 150 · Atacado e varejo
 			</div>
 			<NavbarCliente
 				totalItensCarrinho={totalItensCarrinho}

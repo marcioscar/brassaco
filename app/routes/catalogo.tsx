@@ -1105,18 +1105,18 @@ function calcularFretePedido(
 		};
 	}
 
-	if (totalCarrinho >= 100) {
+	if (totalCarrinho >= 150) {
 		return {
 			valor: 0,
-			resumo: "Frete gratis (DF para pedidos acima de R$ 100,00)",
-			observacao: "Frete: gratis (DF, pedido acima de R$ 100,00).",
+			resumo: "Frete gratis (DF para pedidos acima de R$ 150,00)",
+			observacao: "Frete: gratis (DF, pedido acima de R$ 150,00).",
 		};
 	}
 
 	return {
 		valor: 30,
-		resumo: "Frete R$ 30,00 (DF para pedidos abaixo de R$ 100,00)",
-		observacao: "Frete: R$ 30,00 (DF, pedido abaixo de R$ 100,00).",
+		resumo: "Frete R$ 30,00 (DF para pedidos abaixo de R$ 150,00)",
+		observacao: "Frete: R$ 30,00 (DF, pedido abaixo de R$ 150,00).",
 	};
 }
 
